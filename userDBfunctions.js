@@ -1,4 +1,4 @@
-const {readFile, writeFile, read} = require("fs")
+const {readFile, writeFile} = require("fs")
 
 const readUserDB = () => {
     return new Promise((resolve, reject)=>{
@@ -15,19 +15,34 @@ function checkIfUserExist(username, password){
         existingUserDB
             .then(users=>{
                 for (let index = 0; index < users.length; index++) {
+                    console.log("********")
+                    console.log("checking=>",users[index].username,users[index].password)
+                    console.log(username, password)
+
                     if (users[index].username == username && users[index].password == password) {
+
                         // send true if user exists
-                        reject("User with this username and password exists");
+                        resolve("both match");
+                        break;
+                        // return; 
+                    }
+                    else if (users[index].username == username) {
+                        // send true if user exists
+                        resolve("username matches");
 
                         return; 
-                        //the purpose of the return above
-                        //  is to meke sure that the code does not pass 
-                        //this line after reject
                     }
+                    else if (users[index].username == username) {
+                        // send true if user exists
+                        resolve("password matches");
+
+                        return; 
+                    }
+                    
                 }
                 
                 //resolve false if the user does not exist
-                resolve(false)
+                resolve(true)
             })
     })
 
@@ -37,7 +52,8 @@ function checkIfUserExist(username, password){
 function writeUserDB(username,password){
     // first check if the user exist
     checkIfUserExist(username,password)
-        .then(res => {
+        .then((res) => {
+            console.log(res)
             if (res === false){
                 //since user does not exist,
                 // get all users from the data base
